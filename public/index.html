@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Repuestos Full Cars</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--red:#E63329;--dark:#111;--gray:#f5f5f5;--border:#e0e0e0;--text:#222;--muted:#666}
+body{font-family:'Segoe UI',sans-serif;color:var(--text);background:#fff}
+a{text-decoration:none;color:inherit}
+.topbar{background:var(--red);color:#fff;text-align:center;font-size:13px;padding:8px;letter-spacing:.3px}
+nav{background:var(--dark);padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100}
+.nav-logo{color:#fff;font-size:18px;font-weight:700;display:flex;align-items:center;gap:8px}
+.nav-logo span{color:var(--red)}
+.nav-links{display:flex;gap:24px}
+.nav-links a{color:#ccc;font-size:14px;transition:color .2s}
+.nav-links a:hover{color:#fff}
+.nav-right{display:flex;align-items:center;gap:12px}
+.btn-wa{background:#25D366;color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px}
+.cart-btn{background:none;border:none;color:#fff;font-size:22px;cursor:pointer;position:relative}
+.cart-count{position:absolute;top:-6px;right:-8px;background:var(--red);color:#fff;font-size:10px;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center}
+.hero{background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 50%,#0d0d0d 100%);min-height:480px;display:flex;align-items:center;justify-content:center;text-align:center;padding:60px 5%;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(230,51,41,.15) 0%,transparent 70%)}
+.hero-content{position:relative;z-index:1;max-width:650px}
+.hero h1{color:#fff;font-size:42px;font-weight:800;line-height:1.15;margin-bottom:16px}
+.hero h1 span{color:var(--red)}
+.hero p{color:#aaa;font-size:16px;line-height:1.7;margin-bottom:32px}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn-primary{background:var(--red);color:#fff;border:none;padding:13px 28px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;transition:opacity .2s}
+.btn-primary:hover{opacity:.88}
+.btn-secondary{background:transparent;color:#fff;border:1.5px solid #444;padding:13px 28px;border-radius:8px;font-size:15px;cursor:pointer}
+.hero-badges{display:flex;gap:20px;justify-content:center;margin-top:28px;flex-wrap:wrap}
+.hero-badge{display:flex;align-items:center;gap:6px;color:#888;font-size:13px}
+.hero-badge span{color:var(--red)}
+section{padding:56px 5%}
+.section-header{text-align:center;margin-bottom:36px}
+.section-header h2{font-size:26px;font-weight:700;margin-bottom:8px}
+.section-header p{color:var(--muted);font-size:15px}
+.section-header .line{width:48px;height:3px;background:var(--red);margin:12px auto 0}
+.cats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.cat-card{background:var(--gray);border-radius:12px;padding:24px 16px;text-align:center;cursor:pointer;border:1.5px solid transparent;transition:all .2s}
+.cat-card:hover{border-color:var(--red);background:#fff;box-shadow:0 4px 20px rgba(230,51,41,.1)}
+.cat-icon{font-size:36px;margin-bottom:10px}
+.cat-card h3{font-size:15px;font-weight:700;margin-bottom:4px}
+.cat-card p{font-size:12px;color:var(--muted)}
+.cat-count{display:inline-block;margin-top:8px;background:var(--red);color:#fff;font-size:11px;padding:2px 10px;border-radius:20px}
+/* BUSCADOR */
+.search-wrap{max-width:600px;margin:0 auto 32px;display:flex;gap:10px}
+.search-wrap input{flex:1;padding:12px 16px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;outline:none}
+.search-wrap input:focus{border-color:var(--red)}
+.search-wrap button{background:var(--red);color:#fff;border:none;padding:12px 20px;border-radius:8px;cursor:pointer;font-size:14px}
+.filter-tabs{display:flex;gap:8px;justify-content:center;margin-bottom:28px;flex-wrap:wrap}
+.filter-tab{padding:7px 18px;border-radius:20px;border:1.5px solid var(--border);background:#fff;font-size:13px;cursor:pointer;transition:all .2s}
+.filter-tab.active,.filter-tab:hover{background:var(--red);color:#fff;border-color:var(--red)}
+.prods-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+.prod-card{border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:box-shadow .2s;background:#fff}
+.prod-card:hover{box-shadow:0 6px 24px rgba(0,0,0,.1)}
+.prod-img{background:#f0f0f0;height:160px;display:flex;align-items:center;justify-content:center;font-size:48px;position:relative;overflow:hidden}
+.prod-img img{width:100%;height:100%;object-fit:cover}
+.prod-badge{position:absolute;top:8px;left:8px;background:var(--red);color:#fff;font-size:10px;padding:2px 7px;border-radius:4px;font-weight:600}
+.prod-badge.agotado{background:#999}
+.prod-body{padding:12px}
+.prod-body h4{font-size:13px;font-weight:600;margin-bottom:4px;line-height:1.4;min-height:36px}
+.prod-cat{font-size:10px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.prod-marca{font-size:11px;color:#444;margin-bottom:6px;font-weight:500}
+.prod-price{font-size:18px;font-weight:700;color:var(--red);margin-bottom:4px}
+.prod-stock-ok{font-size:11px;color:#16a34a;margin-bottom:8px}
+.prod-stock-low{font-size:11px;color:#f59e0b;margin-bottom:8px}
+.prod-stock-no{font-size:11px;color:#999;margin-bottom:8px}
+.btn-add{width:100%;background:var(--dark);color:#fff;border:none;padding:9px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:background .2s}
+.btn-add:hover{background:#333}
+.btn-add:disabled{background:#ccc;cursor:not-allowed}
+.trust-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.trust-item{text-align:center;padding:24px 16px;background:var(--gray);border-radius:12px}
+.trust-icon{font-size:32px;margin-bottom:10px}
+.trust-item h4{font-size:14px;font-weight:700;margin-bottom:6px}
+.trust-item p{font-size:12px;color:var(--muted);line-height:1.5}
+.about-wrap{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.about-text h2{font-size:26px;font-weight:700;margin-bottom:14px}
+.about-text h2 span{color:var(--red)}
+.about-text p{color:var(--muted);font-size:15px;line-height:1.8;margin-bottom:16px}
+.about-stats{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.stat{background:var(--dark);color:#fff;border-radius:12px;padding:18px;text-align:center}
+.stat .num{font-size:26px;font-weight:800;color:var(--red)}
+.stat .lbl{font-size:11px;color:#aaa;margin-top:4px}
+.contact-wrap{background:var(--dark);border-radius:16px;padding:48px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.contact-text h2{color:#fff;font-size:24px;font-weight:700;margin-bottom:12px}
+.contact-text p{color:#888;font-size:14px;line-height:1.7;margin-bottom:20px}
+.contact-btns{display:flex;flex-direction:column;gap:10px}
+.btn-contact{display:flex;align-items:center;gap:12px;padding:13px 18px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;border:none}
+.btn-contact.wa{background:#25D366;color:#fff}
+.btn-contact.ig{background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff}
+.contact-form{display:flex;flex-direction:column;gap:10px}
+.contact-form input,.contact-form textarea{background:#1a1a1a;border:1px solid #333;color:#fff;padding:11px 14px;border-radius:8px;font-size:14px;outline:none;font-family:inherit}
+.contact-form textarea{height:90px;resize:none}
+.contact-form button{background:var(--red);color:#fff;border:none;padding:12px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer}
+footer{background:#0a0a0a;color:#fff;padding:40px 5% 20px}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;margin-bottom:28px}
+.footer-logo{font-size:18px;font-weight:700;margin-bottom:10px}
+.footer-logo span{color:var(--red)}
+.footer-desc{color:#666;font-size:13px;line-height:1.7}
+.footer-col h4{font-size:13px;font-weight:700;margin-bottom:14px;color:#ccc}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.footer-col ul li a{color:#666;font-size:13px;transition:color .2s}
+.footer-col ul li a:hover{color:var(--red)}
+.footer-bottom{border-top:1px solid #1a1a1a;padding-top:18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.footer-bottom p{color:#444;font-size:12px}
+.cart-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200}
+.cart-overlay.open{display:flex;justify-content:flex-end}
+.cart-panel{background:#fff;width:380px;height:100%;display:flex;flex-direction:column;padding:22px;overflow-y:auto}
+.cart-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.cart-header h3{font-size:17px;font-weight:700}
+.cart-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted)}
+.cart-items{flex:1;display:flex;flex-direction:column;gap:14px}
+.cart-item{display:flex;gap:10px;align-items:center;border-bottom:1px solid var(--border);padding-bottom:12px}
+.cart-item-icon{background:var(--gray);border-radius:8px;width:52px;height:52px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.cart-item-info{flex:1}
+.cart-item-info h4{font-size:12px;font-weight:600;margin-bottom:3px}
+.cart-item-info p{font-size:13px;color:var(--red);font-weight:700}
+.cart-item-qty{display:flex;align-items:center;gap:8px;margin-top:5px}
+.qty-btn{background:var(--gray);border:none;width:22px;height:22px;border-radius:4px;cursor:pointer;font-size:13px}
+.cart-item-remove{background:none;border:none;color:#ccc;cursor:pointer;font-size:16px}
+.cart-empty{text-align:center;padding:40px 0;color:var(--muted)}
+.cart-footer{border-top:1px solid var(--border);padding-top:14px;margin-top:14px}
+.cart-total{display:flex;justify-content:space-between;font-size:15px;font-weight:700;margin-bottom:14px}
+.btn-mp{width:100%;background:#009ee3;color:#fff;border:none;padding:13px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;margin-top:8px}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--dark);color:#fff;padding:11px 18px;border-radius:8px;font-size:13px;z-index:300;opacity:0;transform:translateY(16px);transition:all .3s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+.no-results{text-align:center;padding:40px;color:var(--muted);grid-column:1/-1}
+.prod-codigo{font-size:10px;color:#bbb;margin-bottom:2px}
+@media(max-width:768px){
+  .nav-links{display:none}
+  .hero h1{font-size:28px}
+  .cats-grid{grid-template-columns:repeat(2,1fr)}
+  .trust-grid{grid-template-columns:repeat(2,1fr)}
+  .about-wrap,.contact-wrap,.footer-top{grid-template-columns:1fr}
+  .cart-panel{width:100%}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">🚗 ¡Envío a todo Chile! &nbsp;|&nbsp; Repuestos originales y alternativos &nbsp;|&nbsp; Pago seguro con MercadoPago</div>
+
+<nav>
+  <div class="nav-logo">⚙️ Repuestos <span>Full Cars</span></div>
+  <div class="nav-links">
+    <a href="#inicio">Inicio</a>
+    <a href="#productos">Productos</a>
+    <a href="#categorias">Categorías</a>
+    <a href="#nosotros">Nosotros</a>
+    <a href="#contacto">Contacto</a>
+  </div>
+  <div class="nav-right">
+    <button class="btn-wa" onclick="window.open('https://wa.me/56935182767','_blank')">💬 WhatsApp</button>
+    <button class="cart-btn" onclick="toggleCart()">🛒<span class="cart-count" id="cartCount">0</span></button>
+  </div>
+</nav>
+
+<section class="hero" id="inicio">
+  <div class="hero-content">
+    <h1>Todo en repuestos,<br><span>al alcance de un clic</span></h1>
+    <p>Repuestos originales y alternativos para tu vehículo. Precios competitivos, despacho rápido y el respaldo que necesitas.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="document.getElementById('productos').scrollIntoView({behavior:'smooth'})">🔍 Buscar repuesto</button>
+      <button class="btn-secondary" onclick="document.getElementById('categorias').scrollIntoView({behavior:'smooth'})">Ver categorías</button>
+    </div>
+    <div class="hero-badges">
+      <div class="hero-badge"><span>✅</span> Productos garantizados</div>
+      <div class="hero-badge"><span>🚚</span> Envío a todo Chile</div>
+      <div class="hero-badge"><span>🔒</span> Pago 100% seguro</div>
+    </div>
+  </div>
+</section>
+
+<section id="categorias" style="background:#f9f9f9">
+  <div class="section-header">
+    <h2>Nuestras Categorías</h2>
+    <p>Encuentra lo que necesitas para tu vehículo</p>
+    <div class="line"></div>
+  </div>
+  <div class="cats-grid">
+    <div class="cat-card" onclick="filterProducts('LUBRICANTE',this)">
+      <div class="cat-icon">🛢️</div>
+      <h3>Lubricantes</h3>
+      <p>Aceites y lubricantes de las mejores marcas</p>
+      <span class="cat-count">Ver productos</span>
+    </div>
+    <div class="cat-card" onclick="filterProducts('FILTROS',this)">
+      <div class="cat-icon">🔵</div>
+      <h3>Filtros</h3>
+      <p>Filtros de aceite, aire y polen</p>
+      <span class="cat-count">Ver productos</span>
+    </div>
+    <div class="cat-card" onclick="filterProducts('MOTOR',this)">
+      <div class="cat-icon">⚙️</div>
+      <h3>Motor</h3>
+      <p>Bujías y componentes de motor</p>
+      <span class="cat-count">Ver productos</span>
+    </div>
+    <div class="cat-card" onclick="filterProducts('CARROCERIA Y ACCESORIOS EXTERIOR',this)">
+      <div class="cat-icon">🚗</div>
+      <h3>Carrocería</h3>
+      <p>Lunetas, ménsulas y accesorios exteriores</p>
+      <span class="cat-count">Ver productos</span>
+    </div>
+  </div>
+</section>
+
+<section id="productos">
+  <div class="section-header">
+    <h2>Nuestros Productos</h2>
+    <p>Catálogo completo de repuestos</p>
+    <div class="line"></div>
+  </div>
+  <div class="search-wrap">
+    <input type="text" id="searchInput" placeholder="🔍 Buscar por nombre, marca o código..." oninput="buscar()">
+    <button onclick="buscar()">Buscar</button>
+  </div>
+  <div class="filter-tabs">
+    <button class="filter-tab active" onclick="filterProducts('Todos',this)">Todos</button>
+    <button class="filter-tab" onclick="filterProducts('LUBRICANTE',this)">Lubricantes</button>
+    <button class="filter-tab" onclick="filterProducts('FILTROS',this)">Filtros</button>
+    <button class="filter-tab" onclick="filterProducts('MOTOR',this)">Motor</button>
+    <button class="filter-tab" onclick="filterProducts('CARROCERIA Y ACCESORIOS EXTERIOR',this)">Carrocería</button>
+  </div>
+  <div class="prods-grid" id="prodsGrid"></div>
+</section>
+
+<section style="background:#f9f9f9">
+  <div class="section-header">
+    <h2>¿Por qué elegirnos?</h2>
+    <div class="line"></div>
+  </div>
+  <div class="trust-grid">
+    <div class="trust-item"><div class="trust-icon">🚚</div><h4>Envío a todo Chile</h4><p>Despacho rápido y seguro hasta tu puerta</p></div>
+    <div class="trust-item"><div class="trust-icon">🛡️</div><h4>Productos garantizados</h4><p>Originales y alternativos de calidad certificada</p></div>
+    <div class="trust-item"><div class="trust-icon">💳</div><h4>Pago 100% seguro</h4><p>MercadoPago con encriptación de datos</p></div>
+    <div class="trust-item"><div class="trust-icon">💬</div><h4>Atención directa</h4><p>Respuesta rápida por WhatsApp</p></div>
+  </div>
+</section>
+
+<section id="nosotros">
+  <div class="about-wrap">
+    <div class="about-text">
+      <h2>¿Quiénes <span>somos?</span></h2>
+      <p>Repuestos Full Cars nace con el compromiso de entregar soluciones rápidas y confiables a conductores particulares y talleres mecánicos en todo Chile.</p>
+      <p>Trabajamos día a día para ser tu aliado de confianza, ofreciendo repuestos originales y alternativos con precios competitivos.</p>
+      <button class="btn-primary" onclick="document.getElementById('contacto').scrollIntoView({behavior:'smooth'})">Contáctanos</button>
+    </div>
+    <div class="about-stats">
+      <div class="stat"><div class="num">+26</div><div class="lbl">Productos disponibles</div></div>
+      <div class="stat"><div class="num">100%</div><div class="lbl">Pago seguro</div></div>
+      <div class="stat"><div class="num">🚚</div><div class="lbl">Envío a todo Chile</div></div>
+      <div class="stat"><div class="num">⭐</div><div class="lbl">Clientes satisfechos</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="contacto" style="background:#f9f9f9">
+  <div class="contact-wrap">
+    <div class="contact-text">
+      <h2>¿Necesitas ayuda?</h2>
+      <p>Escríbenos por WhatsApp o déjanos tu consulta y te respondemos a la brevedad.</p>
+      <div class="contact-btns">
+        <button class="btn-contact wa" onclick="window.open('https://wa.me/56935182767','_blank')">💬 WhatsApp: +56 9 3518 2767</button>
+        <button class="btn-contact ig" onclick="window.open('https://instagram.com/repuestosfullcars_','_blank')">📸 Instagram: @repuestosfullcars_</button>
+      </div>
+    </div>
+    <div class="contact-form">
+      <input type="text" placeholder="Tu nombre" id="cNombre">
+      <input type="email" placeholder="Tu correo electrónico" id="cEmail">
+      <input type="text" placeholder="¿Qué repuesto buscas?" id="cRepuesto">
+      <textarea placeholder="Mensaje o consulta..." id="cMensaje"></textarea>
+      <button onclick="enviarWA()">Enviar por WhatsApp 💬</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-logo">⚙️ Repuestos <span>Full Cars</span></div>
+      <p class="footer-desc">Tu tienda de repuestos automotrices online. Originales y alternativos con envío a todo Chile.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Navegación</h4>
+      <ul>
+        <li><a href="#inicio">Inicio</a></li>
+        <li><a href="#productos">Productos</a></li>
+        <li><a href="#categorias">Categorías</a></li>
+        <li><a href="#nosotros">Nosotros</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contacto</h4>
+      <ul>
+        <li><a href="https://wa.me/56935182767" target="_blank">💬 WhatsApp</a></li>
+        <li><a href="https://instagram.com/repuestosfullcars_" target="_blank">📸 Instagram</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Repuestos Full Cars. Todos los derechos reservados.</p>
+    <div style="color:#444;font-size:12px">💳 MercadoPago &nbsp;|&nbsp; 🔒 Pago seguro</div>
+  </div>
+</footer>
+
+<div class="cart-overlay" id="cartOverlay" onclick="closeCartOutside(event)">
+  <div class="cart-panel">
+    <div class="cart-header">
+      <h3>🛒 Tu carrito</h3>
+      <button class="cart-close" onclick="toggleCart()">✕</button>
+    </div>
+    <div class="cart-items" id="cartItems">
+      <div class="cart-empty"><p>🛒</p><p>Tu carrito está vacío</p></div>
+    </div>
+    <div class="cart-footer" id="cartFooter" style="display:none">
+      <div class="cart-total"><span>Total:</span><span id="cartTotal">$0</span></div>
+      <button class="btn-mp" onclick="pagarMP()">💳 Pagar con MercadoPago</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const productos = [
+  {id:1,codigo:"4201644",nombre:"Aceite Lubrax 5W/30 6x4L",precio:0,cat:"LUBRICANTE",subcat:"Aceite",marca:"LUBRAX",stock:6,emoji:"🛢️"},
+  {id:2,codigo:"4201635",nombre:"Aceite Lubrax 10W/40 6x4",precio:0,cat:"LUBRICANTE",subcat:"Aceite",marca:"LUBRAX",stock:4,emoji:"🛢️"},
+  {id:3,codigo:"21052-8",nombre:"Filtro Aceite HU6006Z",precio:0,cat:"FILTROS",subcat:"Filtro de Aceite",marca:"FILTEC",stock:1,emoji:"🔵"},
+  {id:4,codigo:"21689-5",nombre:"Filtro Aceite HU601/2",precio:0,cat:"FILTROS",subcat:"Filtro de Aceite",marca:"FILTEC",stock:2,emoji:"🔵"},
+  {id:5,codigo:"TFO-HU711/51X",nombre:"Filtro Aceite HU711/51X",precio:0,cat:"FILTROS",subcat:"Filtro de Aceite",marca:"TROOP",stock:0,emoji:"🔵"},
+  {id:6,codigo:"HZ0026106",nombre:"Filtro Aceite W610/6",precio:0,cat:"FILTROS",subcat:"Filtro de Aceite",marca:"HANZO",stock:9,emoji:"🔵"},
+  {id:7,codigo:"HZ0026780",nombre:"Filtro Aceite W67/80",precio:0,cat:"FILTROS",subcat:"Filtro de Aceite",marca:"HANZO",stock:10,emoji:"🔵"},
+  {id:8,codigo:"HZ0026781",nombre:"Filtro Aceite W67/81",precio:0,cat:"FILTROS",subcat:"Filtro de Aceite",marca:"HANZO",stock:5,emoji:"🔵"},
+  {id:9,codigo:"HZ0026885",nombre:"Filtro Aceite W68/85",precio:0,cat:"FILTROS",subcat:"Filtro de Aceite",marca:"HANZO",stock:10,emoji:"🔵"},
+  {id:10,codigo:"",nombre:"Filtro Aceite W818/8",precio:0,cat:"FILTROS",subcat:"Filtro de Aceite",marca:"HANZO",stock:10,emoji:"🔵"},
+  {id:11,codigo:"DFA-31160",nombre:"Filtro Aire",precio:0,cat:"FILTROS",subcat:"Filtro de Aire",marca:"DGP",stock:1,emoji:"💨"},
+  {id:12,codigo:"",nombre:"Filtro Aire C2201",precio:0,cat:"FILTROS",subcat:"Filtro de Aire",marca:"HANZO",stock:3,emoji:"💨"},
+  {id:13,codigo:"HZ00222015",nombre:"Filtro Aire C22015",precio:0,cat:"FILTROS",subcat:"Filtro de Aire",marca:"HANZO",stock:10,emoji:"💨"},
+  {id:14,codigo:"HZ0022294",nombre:"Filtro Aire C2294",precio:0,cat:"FILTROS",subcat:"Filtro de Aire",marca:"HANZO",stock:3,emoji:"💨"},
+  {id:15,codigo:"90799322",nombre:"Filtro Aire C2294",precio:0,cat:"FILTROS",subcat:"Filtro de Aire",marca:"KENDALL",stock:2,emoji:"💨"},
+  {id:16,codigo:"HZ00226026",nombre:"Filtro Aire C25016 C26026",precio:0,cat:"FILTROS",subcat:"Filtro de Aire",marca:"HANZO",stock:10,emoji:"💨"},
+  {id:17,codigo:"HZ0022964",nombre:"Filtro Aire C2964",precio:0,cat:"FILTROS",subcat:"Filtro de Aire",marca:"HANZO",stock:6,emoji:"💨"},
+  {id:18,codigo:"17801-37021",nombre:"Filtro Aire CT200H",precio:0,cat:"FILTROS",subcat:"Filtro de Polen",marca:"TOYOTA",stock:1,emoji:"🌿"},
+  {id:19,codigo:"HZ00219006",nombre:"Filtro Polen CU19006",precio:0,cat:"FILTROS",subcat:"Filtro de Polen",marca:"HANZO",stock:5,emoji:"🌿"},
+  {id:20,codigo:"HZ0022331",nombre:"Filtro Polen CU2331",precio:0,cat:"FILTROS",subcat:"Filtro de Polen",marca:"HANZO",stock:5,emoji:"🌿"},
+  {id:21,codigo:"UT-9426BX2",nombre:"Filtro Polen CU29003-2",precio:0,cat:"FILTROS",subcat:"Filtro de Polen",marca:"HK",stock:2,emoji:"🌿"},
+  {id:22,codigo:"BM3-8202020-05",nombre:"Luneta RH SX6",precio:0,cat:"CARROCERIA Y ACCESORIOS EXTERIOR",subcat:"Luneta",marca:"DFM",stock:7,emoji:"🪟"},
+  {id:23,codigo:"52115-76011",nombre:"Ménsula Lexus LH",precio:0,cat:"CARROCERIA Y ACCESORIOS EXTERIOR",subcat:"Ménsulas",marca:"TOYOTA",stock:1,emoji:"🔩"},
+  {id:24,codigo:"LFR5A-11",nombre:"Bujías de Níquel NGK LFR5A-11",precio:0,cat:"MOTOR",subcat:"Bujias",marca:"NGK",stock:0,emoji:"⚡"},
+  {id:25,codigo:"C2408",nombre:"Filtro de Aire C2408",precio:0,cat:"FILTROS",subcat:"Filtro de Aire",marca:"FILTEC",stock:1,emoji:"💨"},
+  {id:26,codigo:"CU22023",nombre:"Filtro de Polen CU22023",precio:0,cat:"FILTROS",subcat:"Filtro de Polen",marca:"FILTEC",stock:1,emoji:"🌿"},
+];
+
+let cart=[], filtroActual="Todos", busqueda="";
+
+function fmt(n){return n>0?"$"+n.toLocaleString("es-CL"):"A consultar"}
+
+function stockLabel(s){
+  if(s===0) return `<div class="prod-stock-no">⛔ Sin stock</div>`;
+  if(s<=2) return `<div class="prod-stock-low">⚠️ Últimas ${s} unidades</div>`;
+  return `<div class="prod-stock-ok">✅ En stock (${s} u.)</div>`;
+}
+
+function renderProds(){
+  const grid=document.getElementById("prodsGrid");
+  let lista = filtroActual==="Todos" ? productos : productos.filter(p=>p.cat===filtroActual);
+  if(busqueda.trim()){
+    const q=busqueda.toLowerCase();
+    lista=lista.filter(p=>p.nombre.toLowerCase().includes(q)||p.marca.toLowerCase().includes(q)||p.codigo.toLowerCase().includes(q)||p.subcat.toLowerCase().includes(q));
+  }
+  if(lista.length===0){grid.innerHTML='<div class="no-results">🔍 No se encontraron productos. Intenta con otro término.</div>';return;}
+  grid.innerHTML=lista.map(p=>`
+    <div class="prod-card">
+      <div class="prod-img">
+        ${p.stock===0?'<span class="prod-badge agotado">Agotado</span>':''}
+        ${p.emoji}
+      </div>
+      <div class="prod-body">
+        ${p.codigo?`<div class="prod-codigo">Cód: ${p.codigo}</div>`:""}
+        <div class="prod-cat">${p.subcat}</div>
+        <h4>${p.nombre}</h4>
+        <div class="prod-marca">🏷️ ${p.marca}</div>
+        <div class="prod-price">${fmt(p.precio)}</div>
+        ${stockLabel(p.stock)}
+        <button class="btn-add" onclick="addToCart(${p.id})" ${p.stock===0?"disabled":""}>
+          ${p.stock===0?"Consultar disponibilidad":"🛒 Agregar al carrito"}
+        </button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function buscar(){
+  busqueda=document.getElementById("searchInput").value;
+  renderProds();
+}
+
+function filterProducts(cat,btn){
+  filtroActual=cat;
+  busqueda="";
+  document.getElementById("searchInput").value="";
+  document.querySelectorAll(".filter-tab").forEach(b=>b.classList.remove("active"));
+  if(btn) btn.classList.add("active");
+  renderProds();
+  document.getElementById("productos").scrollIntoView({behavior:"smooth"});
+}
+
+function addToCart(id){
+  const p=productos.find(x=>x.id===id);
+  if(!p||p.stock===0) return;
+  const ex=cart.find(x=>x.id===id);
+  if(ex) ex.qty++;
+  else cart.push({...p,qty:1});
+  updateCart();
+  showToast(`✅ "${p.nombre}" agregado al carrito`);
+}
+
+function updateCart(){
+  const count=cart.reduce((a,x)=>a+x.qty,0);
+  document.getElementById("cartCount").textContent=count;
+  const items=document.getElementById("cartItems");
+  const footer=document.getElementById("cartFooter");
+  if(cart.length===0){
+    items.innerHTML='<div class="cart-empty"><p>🛒</p><p>Tu carrito está vacío</p></div>';
+    footer.style.display="none";return;
+  }
+  footer.style.display="block";
+  items.innerHTML=cart.map(p=>`
+    <div class="cart-item">
+      <div class="cart-item-icon">${p.emoji}</div>
+      <div class="cart-item-info">
+        <h4>${p.nombre}</h4>
+        <p>${fmt(p.precio*p.qty)}</p>
+        <div class="cart-item-qty">
+          <button class="qty-btn" onclick="changeQty(${p.id},-1)">−</button>
+          <span>${p.qty}</span>
+          <button class="qty-btn" onclick="changeQty(${p.id},1)">+</button>
+        </div>
+      </div>
+      <button class="cart-item-remove" onclick="removeItem(${p.id})">🗑️</button>
+    </div>
+  `).join("");
+  const total=cart.reduce((a,x)=>a+(x.precio>0?x.precio*x.qty:0),0);
+  document.getElementById("cartTotal").textContent=total>0?fmt(total):"A cotizar";
+}
+
+function changeQty(id,d){
+  const p=cart.find(x=>x.id===id);
+  if(!p) return;
+  p.qty+=d;
+  if(p.qty<=0) cart=cart.filter(x=>x.id!==id);
+  updateCart();
+}
+
+function removeItem(id){cart=cart.filter(x=>x.id!==id);updateCart();}
+
+function toggleCart(){document.getElementById("cartOverlay").classList.toggle("open");}
+function closeCartOutside(e){if(e.target===document.getElementById("cartOverlay"))toggleCart();}
+
+function pagarMP(){
+  const items=cart.map(x=>`${x.qty}x ${x.nombre} (${x.codigo||"s/c"})`).join(", ");
+  const total=cart.reduce((a,x)=>a+(x.precio>0?x.precio*x.qty:0),0);
+  const msg=`Hola! Quiero cotizar/pagar mi pedido:\n${items}\n${total>0?"Total: "+fmt(total):"Solicito cotización"}`;
+  window.open(`https://wa.me/56935182767?text=${encodeURIComponent(msg)}`,"_blank");
+}
+
+function enviarWA(){
+  const n=document.getElementById("cNombre").value;
+  const r=document.getElementById("cRepuesto").value;
+  const m=document.getElementById("cMensaje").value;
+  if(!n||!r){showToast("⚠️ Por favor completa tu nombre y el repuesto que buscas");return;}
+  const msg=`Hola! Mi nombre es ${n}.\nBusco: ${r}\n${m}`;
+  window.open(`https://wa.me/56935182767?text=${encodeURIComponent(msg)}`,"_blank");
+}
+
+function showToast(msg){
+  const t=document.getElementById("toast");
+  t.textContent=msg;t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),3000);
+}
+
+renderProds();
+</script>
+</body>
+</html>
